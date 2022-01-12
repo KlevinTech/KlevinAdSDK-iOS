@@ -20,10 +20,11 @@
 ### 通过Cocoapods集成
 
 - 使用 Cocoaspods1.9.0 或更高版本
-目前 SDK 尚未正式发到 Cocoapods 仓库，只能通过本地开发库方式集成；将解压后的 zip 包内的 `KlevinAdSDK.framework `、 `KlevinAdSDK.podspec `放到同一个目录下，命名： ` KlevinAdSDK `。同时修改项目的 Podfile :
+
+修改项目的 Podfile :
 
 ```shell
-pod 'KlevinAdSDK', :path=>'./KlevinAdSDK'
+pod 'KlevinAdSDK'
 ```
 然后使用命令行运行：
 ```shell
@@ -78,7 +79,7 @@ pod install --repo-update
 key值为` KlevinApplicationIdentifier `，类型为string，内容是申请的AppId：
 ```xml
 <key>KlevinApplicationIdentifier</key>
-<string>30007</string>
+<string>30709</string>
 ```
 然后在AppDelegate的`application:didFinishLaunchingWithOptions:`方法中进行初始化：
 ```objective-c
@@ -111,7 +112,7 @@ key值为` KlevinApplicationIdentifier `，类型为string，内容是申请的A
     // Override point for customization after application launch. 
  
     [KlevinAdSDK.sharedInstance startWithAppId
-:@"30007" withCompletionHandler:^(NSError * _Nullable error) { 
+:@"30709" withCompletionHandler:^(NSError * _Nullable error) { 
         if (error) { 
             // SDK初始化失败
         } 
@@ -258,7 +259,7 @@ SDK不会主动弹窗请求IDFA权限。当应用被用户授予广告追踪权�
 @end
 
 - (void)requestSplashAd {
-	KLNSplashAdRequest *req = [[KLNSplashAdRequest alloc] initWithPosId:@"30033"];
+	KLNSplashAdRequest *req = [[KLNSplashAdRequest alloc] initWithPosId:@"37060"];
 	// 可选设置，设置了超时时长，则加载回调在超时限制内未成功加载到开屏广告，则会返回超时错误
     // 预拉取的场景建议不设置timeout或者设置一个相对较长的timeout时长，如60秒
     req.timeout = 3; 
@@ -387,7 +388,7 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  KLNInterstitialAdRequest *req = [[KLNInterstitialAdRequest alloc] initWithPosId:@"30023"];
+  KLNInterstitialAdRequest *req = [[KLNInterstitialAdRequest alloc] initWithPosId:@"37061"];
   [KLNInterstitialAd loadWithRequest:req completionHandler:^(KLNInterstitialAd *ad, NSError *error) {
     if (error) {
       NSLog(@"Failed to load interstitial ad with error: %@", [error localizedDescription]);
@@ -522,7 +523,7 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 @implementation ViewController
 
 - (void)loadRewardedAd {
-  KLNRewardedAdRequest *req = [[KLNRewardedAdRequest alloc] initWithPosId:@"30027"];
+  KLNRewardedAdRequest *req = [[KLNRewardedAdRequest alloc] initWithPosId:@"37062"];
   req.autoMute = NO;
   req.rewardTrigger = 2;
   req.rewardTime = 10;
