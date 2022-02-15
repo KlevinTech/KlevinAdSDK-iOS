@@ -27,6 +27,7 @@
 pod 'KlevinAdSDK'
 ```
 然后使用命令行运行：
+
 ```shell
 pod install --repo-update
 ```
@@ -51,13 +52,13 @@ pod install --repo-update
 
 - Build Setting -> Other Linker Flags 添加 -ObjC 
 
-![Docs Version Dropdown](img/ios.png)
+![Docs Version Dropdown](../img/docs/sdk/ios.png)
 
 ### 项目配置
 
 - ATS 配置
 
-苹果公司在iOS9中升级了应用网络通信安全策略，默认推荐开发者使用HTTPS协议来进行网络通信，并限制HTTP协议的请求。为了避免出现无法拉取到广告的情况，我们推荐开发者设置 NSAllowsArbitraryLoadsInWebContent 和 NSAllowsArbitraryLoads 
+苹果公司在 iOS9 中升级了应用网络通信安全策略，默认推荐开发者使用 HTTPS 协议来进行网络通信，并限制 HTTP 协议的请求。为了避免出现无法拉取到广告的情况，我们推荐开发者设置`NSAllowsArbitraryLoadsInWebContent `和 ` NSAllowsArbitraryLoads `
 
 ```xml
 <key>NSAppTransportSecurity</key>
@@ -315,7 +316,7 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 
 #### 2. 展示广告
 
-开屏广告会在您的应用启动时或用户将其切换为在前台运行时展示。您可以通过在AppDelegate的 applicationDidBecomeActive: 方法加入如下代码来完成开屏广告展示：
+开屏广告会在您的应用启动时或用户将其切换为在前台运行时展示。您可以通过在AppDelegate的 `applicationDidBecomeActive: `方法加入如下代码来完成开屏广告展示：
 
 ```objective-c
 - (void)tryToPresentAd {
@@ -388,7 +389,7 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  KLNInterstitialAdRequest *req = [[KLNInterstitialAdRequest alloc] initWithPosId:@"37061"];
+  KLNInterstitialAdRequest *req = [[KLNInterstitialAdRequest alloc] initWithPosId:@"37062"];
   [KLNInterstitialAd loadWithRequest:req completionHandler:^(KLNInterstitialAd *ad, NSError *error) {
     if (error) {
       NSLog(@"Failed to load interstitial ad with error: %@", [error localizedDescription]);
@@ -523,7 +524,7 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
 @implementation ViewController
 
 - (void)loadRewardedAd {
-  KLNRewardedAdRequest *req = [[KLNRewardedAdRequest alloc] initWithPosId:@"37062"];
+  KLNRewardedAdRequest *req = [[KLNRewardedAdRequest alloc] initWithPosId:@"37061"];
   req.autoMute = NO;
   req.rewardTrigger = 2;
   req.rewardTime = 10;
@@ -1147,12 +1148,12 @@ POSID：
 `[KlevinAdSDK.sharedInstance enableDebugLogout];`
 SDK日志的tag以 “**[KlevinAdSDK]**” 开头：
 
-![Docs Version Dropdown](img/log1.png)
+![Docs Version Dropdown](../img/docs/sdk/log1.png)
 
 ### 排查问题所需信息
 请求广告异常需提供广告请求的requestId，设备的idfa或caid等信息给游可赢排查。可通过日志过滤获取
 
-![Docs Version Dropdown](img/log2.png)
+![Docs Version Dropdown](../img/docs/sdk/log2.png)
 
 ### 版本升级注意事项
 
