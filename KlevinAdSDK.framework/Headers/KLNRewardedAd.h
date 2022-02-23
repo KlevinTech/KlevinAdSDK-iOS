@@ -12,6 +12,7 @@
 #import <KlevinAdSDK/KLNAdRequest.h>
 #import <KlevinAdSDK/KLNFullScreenContentDelegate.h>
 #import <KlevinAdSDK/KLNAdVideoController.h>
+#import <KlevinAdSDK/KLNAdBiddingProtocol.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -27,7 +28,7 @@ typedef void (^KLNRewardedAdLoadCompletionHandler)(KLNRewardedAd *_Nullable rewa
                                                   NSError *_Nullable error);
 
 /// 激励广告
-@interface KLNRewardedAd : NSObject<KLNFullScreenPresentingAd>
+@interface KLNRewardedAd : NSObject<KLNFullScreenPresentingAd, KLNAdBiddingProtocol>
 
 /// 当前激励广告绑定的激励内容
 @property (nonatomic, readonly) KLNAdReward *adReward;

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <KlevinAdSDK/KLNAdRequest.h>
 #import <KlevinAdSDK/KLNAdVideoController.h>
+#import <KlevinAdSDK/KLNAdBiddingProtocol.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,7 +38,7 @@ typedef void (^KLNUnifiedNativeAdLoadCompletionHandler)(NSArray<KLNUnifiedNative
                                                        NSError *_Nullable error);
 
 ///自渲染广告
-@interface KLNUnifiedNativeAd : NSObject
+@interface KLNUnifiedNativeAd : NSObject<KLNAdBiddingProtocol>
 
 /// 广告事件回调对象
 @property (nonatomic, weak, nullable) id<KLNUnifiedNativeAdDelegate> delegate;
@@ -109,7 +110,6 @@ typedef void (^KLNUnifiedNativeAdLoadCompletionHandler)(NSArray<KLNUnifiedNative
 
 /// 用户手动关闭广告时，请调用该方法
 - (void)dislike;
-
 
 @end
 

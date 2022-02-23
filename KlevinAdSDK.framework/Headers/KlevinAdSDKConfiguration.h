@@ -38,6 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 用户设备的CAID信息（若媒体传入非nil值，则SDK不会请求CAID）
 @property (atomic, copy, nullable) NSString *mediaCAID;
 
+/// 是否允许广告个性化推荐。如果不设置，默认为YES。
+@property (atomic, assign) BOOL allowPersonalizedRecommendation;
+
 @end
 
 NS_ASSUME_NONNULL_END

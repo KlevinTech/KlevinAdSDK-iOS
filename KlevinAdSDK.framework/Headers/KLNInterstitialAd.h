@@ -11,6 +11,7 @@
 #import <KlevinAdSDK/KLNAdRequest.h>
 #import <KlevinAdSDK/KLNFullScreenContentDelegate.h>
 #import <KlevinAdSDK/KLNAdVideoController.h>
+#import <KlevinAdSDK/KLNAdBiddingProtocol.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -23,7 +24,7 @@ typedef void (^KLNInterstitialAdLoadCompletionHandler)(KLNInterstitialAd *_Nulla
                                                        NSError *_Nullable error);
 
 /// 插屏广告
-@interface KLNInterstitialAd : NSObject<KLNFullScreenPresentingAd>
+@interface KLNInterstitialAd : NSObject<KLNFullScreenPresentingAd, KLNAdBiddingProtocol>
 
 /// 视图展示/销毁消息回调代理
 @property (nonatomic, weak, nullable) id<KLNFullScreenContentDelegate> fullScreenContentDelegate;
@@ -51,6 +52,7 @@ typedef void (^KLNInterstitialAdLoadCompletionHandler)(KLNInterstitialAd *_Nulla
 /// Presents the interstitial ad. Must be called on the main thread.
 /// @param rootViewController A view controller to present the ad.
 - (void)presentFromRootViewController:(UIViewController *)rootViewController;
+
 
 @end
 

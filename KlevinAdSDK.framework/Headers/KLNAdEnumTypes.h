@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "KLNAdsDefines.h"
 
 /// 广告样式
 typedef NS_ENUM(NSInteger, KLNAdFormat) {
@@ -41,3 +42,24 @@ typedef NS_ENUM(NSInteger, KLNAdTemplateType) {
     /// 互动广告竖版
     KLNAdTemplateTypeVerInteractive = 302,
 };
+
+
+typedef NS_ENUM(NSInteger, KLNAdBiddingLossReason) {
+    KLNAdBiddingLossReasonNone              = 1,        // 竞得
+    KLNAdBiddingLossReasonLowPrice          = 2711,     // 竞争力不足
+    KLNAdBiddingLossReasonTimeOut           = 2712,     // 返回超时
+    KLNAdBiddingLossReasonNoAd              = 2713,     // 无广告回包
+    KLNAdBiddingLossReasonOther             = 2714,     // 其他原因
+};
+
+
+typedef NSString *KLNAdBidingAdnID NS_STRING_ENUM;
+/// 输给游可赢其他广告
+KLN_EXTERN KLNAdBidingAdnID const KLNAdBidingAdnIDYKYAd;
+
+/// 输给第三方ADN
+KLN_EXTERN KLNAdBidingAdnID const KLNAdBidingAdnIDThirdParty;
+
+/// 输给自售广告主
+KLN_EXTERN KLNAdBidingAdnID const KLNAdBidingAdnIDSelfOwn;
+

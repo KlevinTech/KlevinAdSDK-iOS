@@ -11,6 +11,7 @@
 #import <KlevinAdSDK/KLNAdRequest.h>
 #import <KlevinAdSDK/KLNFullScreenContentDelegate.h>
 #import <KlevinAdSDK/KLNAdVideoController.h>
+#import <KlevinAdSDK/KLNAdBiddingProtocol.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -23,7 +24,7 @@ typedef void (^KLNSplashAdLoadCompletionHandler)(KLNSplashAd *_Nullable splashAd
                                                   NSError *_Nullable error);
 
 /// 开屏广告
-@interface KLNSplashAd : NSObject<KLNFullScreenPresentingAd>
+@interface KLNSplashAd : NSObject<KLNFullScreenPresentingAd, KLNAdBiddingProtocol>
 
 /// 视图展示/销毁消息回调代理
 @property (nonatomic, weak, nullable) id<KLNFullScreenContentDelegate> fullScreenContentDelegate;
