@@ -75,4 +75,21 @@ typedef NS_ENUM(NSUInteger, KLNVideoAutoPlayPolicy) {
 
 @end
 
+/// 模版广告请求对象
+@interface KLNTemplateAdRequest : KLNAdRequest
+
+/// 一次请求模版广告个数，推荐请求1-3个，一次最多请求3个。
+@property (nonatomic, assign) NSUInteger adCount;
+
+/// 请求广告的宽和高，SDK目前忽略设置的高度，建议填0。必填参数。
+@property (nonatomic, assign) CGSize adSize;
+
+/// 视频素材下载策略：控制视频素材下载时机。不设置,默认为始终下载视频(KLNVideoDownloadPolicyAlways)
+@property (nonatomic, assign) KLNVideoDownloadPolicy autoDownloadPolicy;
+
+/// 视频广告初始化时是否静音播放，默认静音播放
+@property (nonatomic, assign) BOOL muted;
+
+@end
+
 NS_ASSUME_NONNULL_END

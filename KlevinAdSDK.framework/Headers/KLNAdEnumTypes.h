@@ -15,6 +15,7 @@ typedef NS_ENUM(NSInteger, KLNAdFormat) {
     KLNAdFormatInterstitial,              ///< 插屏广告（Interstitial）
     KLNAdFormatRewarded,                  ///< 激励广告（Rewarded）
     KLNAdFormatUnifiedNative,             ///< 自渲染广告（UnifiedNative）
+    KLNAdFormatTemplate,                  ///< 模版广告（Template）
 };
 
 /// 广告创意模版

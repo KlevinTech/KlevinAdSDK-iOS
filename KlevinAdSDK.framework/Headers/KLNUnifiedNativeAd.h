@@ -37,8 +37,10 @@ typedef NS_ENUM(NSUInteger, KLNUnifiedNativeAdVideoAutoPlayPolicy) {
 typedef void (^KLNUnifiedNativeAdLoadCompletionHandler)(NSArray<KLNUnifiedNativeAd *> *_Nullable adList,
                                                        NSError *_Nullable error);
 
-///自渲染广告
+
+///自渲染广告。请注意，在主线程中使用该类！！！
 @interface KLNUnifiedNativeAd : NSObject<KLNAdBiddingProtocol>
+
 
 /// 广告事件回调对象
 @property (nonatomic, weak, nullable) id<KLNUnifiedNativeAdDelegate> delegate;
