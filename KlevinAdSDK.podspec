@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'KlevinAdSDK'
-    s.version          = '2.6.0.203'
+    s.version          = '2.6.0.207'
     s.summary          = '游可赢广告SDK'
     s.description      = <<-DESC
     游可赢广告SDK，为第三方移动应用快速对接互动娱乐游戏广告服务。
