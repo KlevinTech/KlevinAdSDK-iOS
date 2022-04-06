@@ -52,7 +52,7 @@ pod install --repo-update
 
 - Build Setting -> Other Linker Flags 添加 -ObjC 
 
-![Docs Version Dropdown](../img/docs/sdk/ios.png)
+![Docs Version Dropdown](img/docs/sdk/ios.png)
 
 ### 项目配置
 
@@ -1627,12 +1627,12 @@ POSID：
 `[KlevinAdSDK.sharedInstance enableDebugLogout];`
 SDK日志的tag以 “**[KlevinAdSDK]**” 开头：
 
-![Docs Version Dropdown](../img/docs/sdk/log1.png)
+![Docs Version Dropdown](img/docs/sdk/log1.png)
 
 ### 排查问题所需信息
 请求广告异常需提供广告请求的requestId，设备的idfa或caid等信息给游可赢排查。可通过日志过滤获取
 
-![Docs Version Dropdown](../img/docs/sdk/log2.png)
+![Docs Version Dropdown](img/docs/sdk/log2.png)
 
 ### 版本升级注意事项
 
