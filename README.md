@@ -24,7 +24,7 @@
 修改项目的 Podfile :
 
 ```shell
-pod 'KlevinAdSDK'
+pod 'KlevinAdSDK', '~>2.7'
 ```
 然后使用命令行运行：
 
@@ -198,9 +198,85 @@ SDK不会主动弹窗请求IDFA权限。当应用被用户授予广告追踪权�
 [KlevinAdSDK.sharedInstance enableDebugLogout];
 ```
 
+### **关闭个性化推荐广告**
+
+**基本信息**
+
+游可赢广告SDK 从V2.6.0 版本开始新增关闭个性化推荐广告功能。
+
+1. 为遵循《个人信息保护法》相关法规，游可赢广告SDK向开发者提供控制个性化推荐广告的能力。
+2. 开发者应当遵循相关法律法规的要求，为用户在客户端中提供清晰明确的关闭个性化广告服务的选项，并在用户开启或关闭时及时调用游可赢SDK对应接口知会状态变化。
+
+
+
+**使用方式**
+
+1. 接入方可以通过KlevinAdSDKConfiguration的属性allowPersonalizedRecommendation来控制是否允许个性化推荐广告。当不设置该属性时，默认为允许个性化推荐。
+2. 接入方**应该保存**是否允许个性化推荐广告的状态，**SDK 不会保存**。在初始化SDK和改变个性化广告状态时，应该重新设置allowPersonalizedRecommendation属性。示例代码如下，详情请见Demo。
+
+- **初始化SDK时设置allowPersonalizedRecommendation**
+
+
+
+```
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // Override point for customization after application launch.
+
+    //...
+    KlevinAdSDKConfiguration.configuration.allowPersonalizedRecommendation = [KLNPersonalizedRecommendationMgr getPersonalizedRecommendationStatus];
+
+    [KlevinAdSDK.sharedInstance startWithCompletionHandler:^(NSError * _Nullable error) {
+        if (error) {
+            KLNDemoLog(@"初始化失败：%@", error.localizedDescription);
+        } else {
+            KLNDemoLog(@"初始化成功");
+        }
+    } withConfiguration:KlevinAdSDKConfiguration.configuration];
+
+    return YES;
+}
+
+static NSString *const kKLNPersonalizedRecommendationKey = @"kKLNPersonalizedRecommendationKey";
+
+@implementation KLNPersonalizedRecommendationMgr
+
++ (BOOL)getPersonalizedRecommendationStatus {
+    
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:kKLNPersonalizedRecommendationKey]) {
+        return YES; //没有的话默认为YES
+    }
+    
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kKLNPersonalizedRecommendationKey];
+}
+
++ (void)setPersonalizedRecommendationStatus:(BOOL)status {
+    
+    [[NSUserDefaults standardUserDefaults] setBool:status forKey:kKLNPersonalizedRecommendationKey];
+    
+    KlevinAdSDKConfiguration.configuration.allowPersonalizedRecommendation = status;
+}
+```
+
+
+
+
+
+- **用户在App点击接入方提供的是否允许个性化推荐广告按钮后需要重新设置allowPersonalizedRecommendation**
+
+
+
+```
+- (void)_onEnablePersonalizedRecommendationBtn:(UIButton *)btn {
+    btn.selected = !btn.isSelected;
+    
+    [KLNPersonalizedRecommendationMgr setPersonalizedRecommendationStatus:btn.selected];
+    
+}
+```
+
 ## 广告接入
 
-在新版API中，开屏广告、插屏广告、激励广告的视图展示回调统一遵循代理 KLNFullScreenContentDelegate ，关于代理协议的方法说明如下：
+在新版API中，插屏广告、激励广告的视图展示回调统一遵循代理 KLNFullScreenContentDelegate ，关于代理协议的方法说明如下：
 
 <table>
   <tr>
@@ -229,15 +305,19 @@ SDK不会主动弹窗请求IDFA权限。当应用被用户授予广告追踪权�
 
 ### 开屏广告接入
 
+**请注意：从V2.7版本开始，开屏广告实现方式由原来的VC实现改为View实现，如果您从老版本升级到V2.7及以上上版本，并且接入了开屏广告，请重新按照下面文档接入开屏广告。**
+
 #### 1. 加载广告并注册回调
 
-开屏广告加载是通过调用` KLNSplashAd `类的静态方法` loadWithRequest: completionHandler: `完成的。该方法需要两个参数，一是` KLNSplashAdRequest `对象，二是加载成功或者失败的回调Block。加载成功得到KLNSplashAd实例后，注册代理对象，`KLNFullScreenContentDelegate `协议会在广告成功展示或展示失败，以及广告关闭时处理回调。
+开屏广告加载是通过调用` KLNSplashAd `类的静态方法` loadWithRequest: completionHandler: `完成的。该方法需要两个参数，一是` KLNSplashAdRequest `对象，二是加载成功或者失败的回调Block。加载成功得到KLNSplashAd实例后，注册 `id<KLNSplashAdDelegate> delegate` 属性，`KLNSplashAdDelegate `协议暴露了广告曝光、广告点击、广告关闭等事件回调。
+
+**开屏请求参数类KLNSplashAdRequest主要接口如下：**
 
 <table>
   <tr>
-    <td>开屏请求参数类名</td>
-    <td>参数</td>
-    <td>参数说明</td>
+    <td>类名</td>
+    <td>属性</td>
+    <td>说明</td>
   </tr>
   <tr>
     <td rowspan="4">KLNSplashAdRequest</td>
@@ -246,126 +326,408 @@ SDK不会主动弹窗请求IDFA权限。当应用被用户授予广告追踪权�
   </tr>
   <tr>
     <td>timeout</td>
-    <td>开屏超时时长，建议设置范围为3(秒)~5(秒)</td>
+    <td>开屏超时时长，单位秒，不设置默认5s。建议设置3s以上</td>
+  </tr>
+   <tr>
+    <td>adSize</td>
+    <td>广告请求尺寸。预留参数，目前SDK暂不支持通过设置adSize来请求相应尺寸广告。不过KLNSplashAd的adView属性会使用adSize来创建view的宽和高，不设置默认为屏幕宽和高</td>
   </tr>
 </table>
 
-以下示例展示了如何在 AppDelegate 类中加载 KLNSplashAd ：
-
-```objective-c
-#import <KlevinAdSDK/KlevinAdSDK.h>
-
-@interface AppDelegate ()
-@property(strong, nonatomic) KLNSplashAd* splashAd;
-@end
-
-- (void)requestSplashAd {
-	KLNSplashAdRequest *req = [[KLNSplashAdRequest alloc] initWithPosId:@"37060"];
-	// 可选设置，设置了超时时长，则加载回调在超时限制内未成功加载到开屏广告，则会返回超时错误
-    // 预拉取的场景建议不设置timeout或者设置一个相对较长的timeout时长，如60秒
-    req.timeout = 3; 
-    [KLNSplashAd loadWithRequest:req completionHandler:^(KLNSplashAd *splashAd, NSError *error) {
-		if (error) {
-			NSLog(@"Failed to load splash ad: %@", error);
-			return;
-		}
-		self.splashAd = splashAd;
-        self.splashAd.fullScreenContentDelegate = self;
-	}];
-}
-
-#pragma mark - KLNFullScreenContentDelegate
-
-- (void)adDidRecordImpression:(nonnull id<KLNFullScreenPresentingAd>)ad {
-    NSLog(@"广告曝光上报打点成功：%s", __FUNCTION__);
-    // TODO: 业务可以通过这个回调方法，上报广告曝光计数事件，与游可赢后台数据对账
-}
-
-- (void)ad:(nonnull id<KLNFullScreenPresentingAd>)ad
-didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
-    NSLog(@"广告展示失败：%li, %@", error.code, error.localizedDescription);
-    // TODO: 业务方可以通过实现该方法，处理广告展示失败事件；比如重新拉取广告
-    // 请根据具体的错误码来做出响应的操作
-
-    if (ad == self.splashAd) {
-        // 开屏广告
-        [self preloadSplashAd];
-        return;
-    }
-}
-
-- (void)adDidPresentFullScreenContent:(nonnull id<KLNFullScreenPresentingAd>)ad {
-    NSLog(@"%s", __FUNCTION__);
-    // TODO: 业务方可以通过实现该方法，暂停业务视图上的动画/计时器等UI操作
-}
-
-- (void)adDidDismissFullScreenContent:(nonnull id<KLNFullScreenPresentingAd>)ad {
-    NSLog(@"%s", __FUNCTION__);
-    // TODO: 业务方可以通过实现该方法，恢复业务视图上的动画等UI操作
-    // MARK: 也可以在广告结束曝光后，预加载下一个广告
-    
-    if (ad == self.splashAd) {
-        // 开屏广告
-         [self requestSplashAd];
-         return;
-    }
-}
-...
-
-```
-
-#### 2. 展示广告
-
-开屏广告会在您的应用启动时或用户将其切换为在前台运行时展示。您可以通过在AppDelegate的 `applicationDidBecomeActive: `方法加入如下代码来完成开屏广告展示：
-
-```objective-c
-- (void)tryToPresentAd {
-    if (self.splashAd) {
-        UIViewController *viewController = self.window.rootViewController;
-        NSError *error = nil;    
-        if ([self.splashAd canPresentFromRootViewController:viewController error:&error]) {
-            [self.splashAd presentFromRootViewController:viewController];
-        } else {
-            //something went wrong.
-            NSLog(@"splash can not show : code = %i, error = %@", error.code, [error localizedDescription]);
-        }
-    } else {
-        // If you don't have an ad ready, request one.
-        [self requestSplashAd];
-    }
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-	[self tryToPresentAd];
-}
-```
-
-#### 3. 主要API
+**开屏广告类KLNSplashAd主要接口如下：**
 
 <table>
   <tr>
     <td>类名</td>
-    <td>API方法</td>
-    <td>API方法说明</td>
+    <td>属性&&方法</td>
+    <td>说明</td>
   </tr>
   <tr>
-    <td rowspan="4">KLNSplashAd</td>
-    <td>fullScreenContentDelegate</td>
-    <td>广告行为回调代理，可以监听广告的曝光、展示、错误、dismiss等</td>
+    <td rowspan="8">KLNSplashAd</td>
+    <td> delegate</td>
+    <td>KLNSplashAdDelegate广告事件回调对象。接入方可以实现该属性获取广告曝光、点击、关闭等事件</td>
   </tr>
   <tr>
-    <td>loadWithRequest: <br/> completionHandler:</td>
-    <td>加载开屏广告入口，在回调block里返回广告实体对象，错误信息用NSError对象存储</td>
+    <td>viewController</td>
+    <td>开发者传入的用来present目标页的ViewController，必传</td>
+  </tr>
+   <tr>
+    <td> adTyp</td>
+    <td>广告类型。 未知模版 KLNSplashAdTypeUnknown = 1, 竖版9:16开屏大图 KLNSplashAdTypeVerImage = 2001, 竖版9:16开屏视频 KLNSplashAdTypeVerVideo = 2002,</td>
+  </tr>
+   <tr>
+    <td> hideSkipButton</td>
+    <td>是否隐藏SDK跳过按钮，如果隐藏，接入方必须自定义跳过按钮。默认为NO。请注意：请在获取adView之前设置改属性。自定义跳过按钮时，SDK内部不会有倒计时逻辑，需要接入方去实现</td>
   </tr>
   <tr>
-    <td>canPresentFromRootViewController: <br/> error:</td>
-    <td>可以在展示前判断是否符合展示条件，错误信息用NSError对象返回</td>
+    <td> adView</td>
+    <td>广告view</td>
   </tr>
   <tr>
-    <td>presentFromRootViewController</td>
-    <td>展示开屏广告，如发生错误通过代理方法返回</td>
+    <td> +loadWithRequest:completionHandler:</td>
+    <td>加载开屏广告方法。参数：request 开屏广告请求对象；completionHandler 广告加载结果回调（成功/失败）。请注意：回调非线程安全。</td>
+  </tr>
+  <tr>
+    <td> -removeSplashAd</td>
+    <td>关闭广告时，建议先调用该方法释放资源。比如停止倒计时，自定义跳过按钮时停止视频播放。请注意：在主线程调用该方法。</td>
   </tr>
 </table>
+
+**广告事件回调KLNSplashAdDelegate**
+
+<table>
+  <tr>
+    <td>类名</td>
+    <td>方法名</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td rowspan="4">KLNSplashAdDelegate</td>
+    <td>kln_splashAdWillExpose:</td>
+    <td>广告曝光回调。业务方可以通过实现该方法，统计曝光量（对账）</td>
+  </tr>
+  <tr>
+    <td>kln_splashAdDidClick:</td>
+    <td>广告点击回调。业务方可以通过实现该方法，统计点击量（对账）</td>
+  </tr>
+   <tr>
+    <td>kln_splashAdClosed:</td>
+    <td>广告关闭回调。当用户点击广告、点击SDK跳过按钮，SDK倒计结束时都会回调该方法，请在此回调方法中进行广告对象的移除操作</td>
+  </tr>
+  <tr>
+    <td>kln_splashAdClickSkip:</td>
+    <td>当用户点击SDK跳过按钮时会触发此回调</td>
+  </tr>
+</table>
+
+以下示例展示了如何加载 KLNSplashAd，具体请参照Demo 
+
+```objective-c
+ KLNSplashAdRequest * request = [[KLNSplashAdRequest alloc] initWithPosId:[self posId]];
+    request.timeout = 5;
+    request.adSize = self.navigationController.view.frame.size;
+    
+    __weak typeof(self)weakSelf = self;
+    [KLNSplashAd loadWithRequest:request completionHandler:^(KLNSplashAd * _Nullable splashAd, NSError * _Nullable error) {
+      
+        [weakSelf.splashAd.adView removeFromSuperview];
+        
+        [weakSelf.splashAd removeSplashAd];
+        
+        weakSelf.splashAd = nil;
+        
+        if (splashAd) {
+            [weakSelf reportBidding:splashAd];
+            
+            weakSelf.splashAd = splashAd;
+            weakSelf.splashAd.delegate = weakSelf;
+            weakSelf.splashAd.viewController = weakSelf;
+            weakSelf.splashAd.hideSkipButton = NO;
+            
+            weakSelf.splashAd.adView.frame = CGRectMake(0, 0, request.adSize.width, request.adSize.height);
+            [weakSelf.navigationController.view addSubview: weakSelf.splashAd.adView];
+        }
+    }];
+```
+
+#### 2. 展示广告
+
+由于开屏广告是以view的形式给到接入方，所以接入方可以按照自己情况自定义开屏广告，比如全屏开屏广告、自定义跳过广告按钮、半屏广告+自定义App Logo，下面举例说明接入方式，具体请参见Demo。
+
+##### 全屏开屏广告
+
+```objective-c
+ - (void)_onFullScreenBtnClick {
+   
+    KLNSplashAdRequest * request = [[KLNSplashAdRequest alloc] initWithPosId:[self posId]];
+    request.timeout = 5;
+    request.adSize = self.navigationController.view.frame.size;
+    
+    __weak typeof(self)weakSelf = self;
+    [KLNSplashAd loadWithRequest:request completionHandler:^(KLNSplashAd * _Nullable splashAd, NSError * _Nullable error) {
+      
+        [weakSelf.splashAd.adView removeFromSuperview];
+        
+        [weakSelf.splashAd removeSplashAd];
+        
+        weakSelf.splashAd = nil;       
+        if (splashAd) {
+            [weakSelf reportBidding:splashAd];
+            
+            weakSelf.splashAd = splashAd;
+            weakSelf.splashAd.delegate = weakSelf;
+            weakSelf.splashAd.viewController = weakSelf;
+            weakSelf.splashAd.hideSkipButton = NO;
+            
+            weakSelf.splashAd.adView.frame = CGRectMake(0, 0, request.adSize.width, request.adSize.height);
+            [weakSelf.navigationController.view addSubview: weakSelf.splashAd.adView];
+            
+        }
+    }];
+}
+
+- (void)kln_splashAdWillExpose:(KLNSplashAd *)ad {
+    
+    KLNDemoLog(@"🌹开屏广告曝光 ad:%@", ad);
+}
+
+- (void)kln_splashAdDidClick:(KLNSplashAd *)ad {
+    
+    KLNDemoLog(@"🌹开屏广告点击 ad:%@", ad);
+    
+}
+
+- (void)kln_splashAdClosed:(KLNSplashAd *)ad {
+    
+    KLNDemoLog(@"🌹开屏广告关闭 ad:%@", ad);
+    
+    [self.splashAd.adView removeFromSuperview];
+  
+    [self.splashAd removeSplashAd];
+    
+    self.splashAd = nil;
+    
+}
+
+- (void)kln_splashAdClickSkip:(KLNSplashAd *)ad {
+    
+    KLNDemoLog(@"🌹开屏广告跳过 ad:%@", ad);
+}
+```
+
+##### 自定义跳过广告按钮
+
+接入方可以自行实现跳过按钮的样式及相关跳转逻辑。
+
+**请注意**：接入方需要在获取adView之前把**KLNSplashAd**对象的**hideSkipButton**属性设置为**YES**，然后自定义跳过按钮。
+
+```objective-c
+- (void)_onFullScreenAndCustomSkipBtnClick {
+  
+    KLNSplashAdRequest * request = [[KLNSplashAdRequest alloc] initWithPosId:[self posId]];
+    request.timeout = 5;
+    request.adSize = self.navigationController.view.frame.size;
+    
+    __weak typeof(self)weakSelf = self;
+    [KLNSplashAd loadWithRequest:request completionHandler:^(KLNSplashAd * _Nullable splashAd, NSError * _Nullable error) {
+        
+        [weakSelf _stopTimer];
+        
+        [weakSelf.splashAd.adView removeFromSuperview];
+        
+        [weakSelf.splashAd removeSplashAd];
+        
+        weakSelf.splashAd = nil;
+        if (splashAd) {
+            [weakSelf reportBidding:splashAd];
+            
+            weakSelf.splashAd = splashAd;
+            weakSelf.splashAd.delegate = weakSelf;
+            weakSelf.splashAd.viewController = weakSelf;
+           //自定义跳过按钮时，需要把hideSkipButton置为YES
+            weakSelf.splashAd.hideSkipButton = YES;
+            
+            weakSelf.splashAd.adView.frame = CGRectMake(0, 0, request.adSize.width, request.adSize.height);
+            
+            UIButton *customSkipButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            customSkipButton.titleLabel.font = [UIFont systemFontOfSize:16];
+            customSkipButton.backgroundColor = [UIColor colorWithWhite:0 alpha:0.9];
+            customSkipButton.layer.cornerRadius = 8;
+            [customSkipButton setTitle:@"跳过广告" forState:UIControlStateNormal];
+            [customSkipButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+            customSkipButton.contentEdgeInsets = UIEdgeInsetsMake(0, 12, 0, 24);
+            customSkipButton.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -12);
+            [customSkipButton addTarget:weakSelf action:@selector(_onSkipButtonClick) forControlEvents:UIControlEventTouchUpInside];
+            weakSelf.customSkipButton = customSkipButton;
+            
+            CGFloat adViewHei = weakSelf.splashAd.adView.frame.size.height;
+            CGFloat safeBottom = 30;
+            if (@available(iOS 11.0, *)) {
+                safeBottom = weakSelf.view.safeAreaInsets.bottom;
+            } else {
+                // Fallback on earlier versions
+            }
+            if (safeBottom < 0.1) {
+                safeBottom = 30;
+            }
+            
+            CGFloat wid = 130;
+            CGFloat hei = 36;
+            customSkipButton.frame = CGRectMake(16, adViewHei - hei - safeBottom, wid, hei);
+
+            [weakSelf.splashAd.adView addSubview:customSkipButton];
+            
+            [weakSelf.navigationController.view addSubview: weakSelf.splashAd.adView];
+            
+            if (weakSelf.splashAd.adType == KLNSplashAdTypeVerImage) {
+                [weakSelf _startTimerWithTotalTime:5];
+            } else if(weakSelf.splashAd.adType == KLNSplashAdTypeVerVideo) {
+                [weakSelf _startTimerWithTotalTime:10];
+            } else {
+                [weakSelf _startTimerWithTotalTime:5];
+            }
+            
+        }
+    }];
+}
+
+- (void)_stopTimer {
+    
+    if (self.countdownTimer) {
+        [self.countdownTimer invalidate];
+        self.countdownTimer = nil;
+    }
+}
+
+- (void)_startTimerWithTotalTime:(NSTimeInterval)total {
+    
+    [self _stopTimer];
+    
+    NSTimeInterval beginTime = [NSDate timeIntervalSinceReferenceDate];
+    
+    __weak typeof(self)weakSelf = self;
+    self.countdownTimer = [NSTimer klnDemo_scheduledTimerWithTimeInterval:0.5 block:^{
+        
+        NSTimeInterval nowTime = [NSDate timeIntervalSinceReferenceDate];
+        if (nowTime >= beginTime + total) {
+            // 曝光时长完成
+            [weakSelf.customSkipButton setTitle:@"跳过广告" forState:UIControlStateNormal];
+            
+            [weakSelf _stopTimer];
+            
+            [weakSelf _onSkipButtonClick];
+            
+            return;
+        }
+        
+        // update text display
+        int left = (int)ceilf(beginTime + total - nowTime);
+        NSString *discount = [NSString stringWithFormat:@"跳过广告 %i", left];
+        [weakSelf.customSkipButton setTitle:discount forState:UIControlStateNormal];
+        
+    } repeats:YES];
+    
+    [[NSRunLoop currentRunLoop] addTimer:self.countdownTimer forMode:NSRunLoopCommonModes];
+    
+    [self.countdownTimer fire];
+}
+
+- (void)_onSkipButtonClick {
+    
+    [self _stopTimer];
+    
+    [self.splashAd.adView removeFromSuperview];
+    
+    [self.splashAd removeSplashAd];
+    
+    self.splashAd = nil;
+}
+
+- (void)kln_splashAdWillExpose:(KLNSplashAd *)ad {
+    
+    KLNDemoLog(@"🌹开屏广告曝光 ad:%@", ad);
+}
+
+- (void)kln_splashAdDidClick:(KLNSplashAd *)ad {
+    
+    KLNDemoLog(@"🌹开屏广告点击 ad:%@", ad);
+    
+    [self _stopTimer];
+}
+
+- (void)kln_splashAdClosed:(KLNSplashAd *)ad {
+    
+    KLNDemoLog(@"🌹开屏广告关闭 ad:%@", ad);
+    
+    [self _stopTimer];
+  
+    [self.splashAd.adView removeFromSuperview];
+    
+    [self.splashAd removeSplashAd];
+    
+    self.splashAd = nil;
+    
+}
+
+- (void)kln_splashAdClickSkip:(KLNSplashAd *)ad {
+    
+    KLNDemoLog(@"🌹开屏广告跳过 ad:%@", ad);
+}
+```
+
+##### 半屏开屏广告
+
+接入方可以实现半屏开屏广告，比如实现半屏开屏广告+底部logo view。
+
+```objective-c
+- (void)_onHalfScreenAndCustomAppLogoBtnClick {
+  
+    KLNSplashAdRequest * request = [[KLNSplashAdRequest alloc] initWithPosId:[self posId]];
+    request.timeout = 5;
+    CGFloat wid = self.navigationController.view.frame.size.width;
+    CGFloat hei = self.navigationController.view.frame.size.height * 0.8;
+    request.adSize = CGSizeMake(wid, hei);
+    
+    __weak typeof(self)weakSelf = self;
+    [KLNSplashAd loadWithRequest:request completionHandler:^(KLNSplashAd * _Nullable splashAd, NSError * _Nullable error) {
+      
+        [weakSelf.splashAd.adView removeFromSuperview];
+        
+        [weakSelf.splashAd removeSplashAd];
+        
+        weakSelf.splashAd = nil;
+      
+        if (splashAd) {
+            [weakSelf reportBidding:splashAd];
+            
+            weakSelf.splashAd = splashAd;
+            weakSelf.splashAd.delegate = weakSelf;
+            weakSelf.splashAd.viewController = weakSelf;
+            weakSelf.splashAd.hideSkipButton = NO;
+            
+            
+            UIView* bottomView = [[UIView alloc] initWithFrame:CGRectZero];
+            bottomView.backgroundColor = [UIColor whiteColor];
+            UIImageView *logoImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+            logoImageView.image = [UIImage imageNamed:@"YKYLogo"];
+            [bottomView addSubview:logoImageView];
+            
+            weakSelf.customBottomView = bottomView;
+            
+            CGFloat adViewWid = request.adSize.width;
+            CGFloat adViewHei = request.adSize.height;
+            weakSelf.splashAd.adView.frame = CGRectMake(0, 0, adViewWid, adViewHei);
+            
+            bottomView.frame = CGRectMake(0, adViewHei, adViewWid, weakSelf.navigationController.view.frame.size.height - adViewHei);
+            
+            CGFloat logoImageViewWid = 128;
+            CGFloat logoImageViewHei = 85;
+            logoImageView.frame = CGRectMake((bottomView.frame.size.width - logoImageViewWid) / 2, (bottomView.frame.size.height - logoImageViewHei) / 2, logoImageViewWid, logoImageViewHei);
+            
+            
+            [weakSelf.navigationController.view addSubview:bottomView];
+            
+            [weakSelf.navigationController.view addSubview:weakSelf.splashAd.adView];
+            
+            
+        }
+            
+         
+    }];
+}
+```
+
+#### 3. 其他说明
+
+1）从V2.7版本开始，开屏广告实现方式由原来的VC实现改为View实现，如果您从老版本升级到V2.7及以上版本，并且接入了开屏广告，请重新按照本文档接入开屏广告。
+
+2）目前开屏广告只支持竖屏，不支持横屏。
+
+3）开屏广告返回的是一个view，客户端直接展示view即可。如果要在底部添加自身logo，需要缩小开屏广告的展示区域，建议开屏半屏广告的显示区域其高度大于屏幕高度的80%。
+
+4）开屏广告请求的超时时间建议设置为3s以上，不设置默认为5s。
+
+5）避免出现展示广告的父view/父window被提前释放或取错父view/父window的情况。
 
 
 ### 插屏广告接入
@@ -456,6 +818,8 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
     }
 }
 ```
+
+
 
 #### 3. 主要API
 
@@ -1054,9 +1418,124 @@ completionHandler:(KLNRewardedAdLoadCompletionHandler)completionHandler;
 
 #### 4. 其他说明
 
-1. 广告曝光kln_unifiedNativeAdWillExpose:方法回调的时机需满足以下条件：广告view可见,alpha不小于0.9，曝光面积不小于50%，**广告view宽度不小于屏幕宽度三分之一(从V2.3.0.220开始该判断条件去掉)**，持续曝光1s。对于一个广告，只会执行曝光回调一次。
+1. 广告曝光kln_unifiedNativeAdWillExpose:方法回调的时机需满足以下条件：广告view可见,alpha不小于0.9，曝光面积不小于50%，**广告view宽度不小于屏幕宽度三分之一(从V2.3.0.220开始该判断条件去掉)**，**持续曝光1s(从V2.6.1开始该判断条件去掉)。**对于一个广告，只会执行曝光回调一次。
 
 2. registerWithClickableViews方法中，clickableViews只接受可见视图的点击（有效点击），如果不可见，即便注册到clickableViews中也不会响应广告的点击事件。
+
+### 实时竞价
+
+#### 1. 能力说明
+
+游可赢 SDK 为接入方提供客户端实时竞价的能力。在请求到广告后，可以通过接口查询到该广告的价格，该价格可用于在不同广告之间比价。广告比价结束后，开发者可调用对应的接口将竞价结果上报至服务端，以提高后续的广告竞价效率。
+
+**权限：实时竞价需申请后才可使用，申请请联系商务经理。**
+
+#### 2. 支持场景
+
+1、 开屏广告
+2、 插屏广告
+3、 激励广告
+4、 自渲染广告
+
+#### 3. 竞价流程
+目前支持实时竞价的广告类型均实现了 ` KLNAdBiddingProtocol ` 协议。该协议提供获取广告价格、竞价结果上报的能力。
+
+```objective-c
+@protocol KLNAdBiddingProtocol <NSObject>
+/// 返回广告的 eCPM，单位：分
+/// @return 成功返回一个大于等于0的值，-1表示无权限或后台出现异常
+- (NSInteger)eCPM;
+
+/// 竞胜之后调用, 需要在调用 present 广告之前调用
+/// @param price - 竞胜价格 (单位: 分)
+- (void)sendWinNotificationWithPrice:(NSInteger)price;
+
+/// 竞败之后调用
+/// @param price - 竞胜价格 (单位: 分)
+/// @param reason - 竞败原因
+/// @param adnID - adnID
+///      KLNAdBidingAdnIDYKYAd：输给游可赢其他广告
+///      KLNAdBidingAdnIDThirdParty：输给第三方ADN
+///      KLNAdBidingAdnIDSelfOwn：输给自售广告主
+- (void)sendLossNotificationWithWinnerPrice:(NSInteger)price lossReason:(KLNAdBiddingLossReason)reason winnerAdnID:(KLNAdBidingAdnID _Nullable)adnID;
+@end
+```
+竞价流程包括以下三个步骤：
+
+##### 获取广告价格
+
+开发者在获取到广告内容后，可以通过广告对象的 ` eCPM `  接口获取到广告的价格。
+
+##### 广告比价
+
+开发者向多个平台发起广告请求后，可以使用不同平台的广告价格进行比价。
+
+##### 竞价结果上报
+
+游可赢广告竞胜后，在广告展示前调用 ` sendWinNotificationWithPrice: ` 接口。
+游可赢广告竞败后，调用 ` sendLossNotificationWithWinnerPrice:lossReason:winnerAdnID: ` 接口。接口参数竞败原因和 adnID 详见枚举值：
+
+```objective-c
+typedef NS_ENUM(NSInteger, KLNAdBiddingLossReason) {
+    KLNAdBiddingLossReasonNone              = 1,        // 竞得
+    KLNAdBiddingLossReasonLowPrice          = 2711,     // 竞争力不足
+    KLNAdBiddingLossReasonTimeOut           = 2712,     // 返回超时
+    KLNAdBiddingLossReasonNoAd              = 2713,     // 无广告回包
+    KLNAdBiddingLossReasonOther             = 2714,     // 其他原因
+};
+
+typedef NSString *KLNAdBidingAdnID NS_STRING_ENUM;
+/// 输给游可赢其他广告
+KLN_EXTERN KLNAdBidingAdnID const KLNAdBidingAdnIDYKYAd;
+/// 输给第三方ADN
+KLN_EXTERN KLNAdBidingAdnID const KLNAdBidingAdnIDThirdParty;
+/// 输给自售广告主
+KLN_EXTERN KLNAdBidingAdnID const KLNAdBidingAdnIDSelfOwn;
+```
+
+以开屏广告为例，整个实时竞价流程的代码片段如下，详情见demo：
+
+```objective-c
+// 加载开屏广告
+[KLNSplashAd loadWithRequest:req completionHandler:^(KLNSplashAd *splashAd, NSError *error) {
+    if (error) {
+        KLNDemoLog(@"加载开屏广告失败：%@", error);
+        return;
+    }
+    KLNDemoLog(@"开屏广告Ready");
+    self.splashAd = splashAd;
+    [self updateButtonState];
+    // 1、获取广告价格
+    NSInteger price = [splashAd eCPM];
+    KLNDemoLog(@"广告价格：%d",price);
+    // 2、广告比价
+    // 3、竞价结果调用
+    [self reportBidding:splashAd];
+    // 4、展示广告
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.splashAutoShowSelectButton.isSelected) {
+            if ([splashAd canPresentFromRootViewController:self error:nil]) {
+                [splashAd presentFromRootViewController:self];
+            }
+            [self updateButtonState];
+        }
+    });
+}];
+
+- (void)reportBidding:(KLNSplashAd *)ad{
+    KLNAdBiddingResult result = KLNDemoBiddingManager.manager.biddingResult;
+    if (result == KLNAdBiddingResultWin) {
+        int price = KLNDemoBiddingManager.manager.price;
+        [ad sendWinNotificationWithPrice:price];
+    }else if(result == KLNAdBiddingResultLoss){
+        int price = KLNDemoBiddingManager.manager.price;
+        KLNAdBiddingLossReason reason = KLNDemoBiddingManager.manager.biddingLossReason;
+        NSString *adnID = KLNDemoBiddingManager.manager.adnID;
+        [ad sendLossNotificationWithWinnerPrice:price lossReason:reason winnerAdnID:adnID];
+    }
+}
+```
+
 
 
 ## 常见问题
