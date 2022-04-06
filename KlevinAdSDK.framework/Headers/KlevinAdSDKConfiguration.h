@@ -9,6 +9,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// 日志回调代理
+@protocol KLNLoggingDelegate <NSObject>
+
+/// 日志回调函数
+/// @param message 日志内容
+- (void)logWithMessage:(nullable NSString *)message;
+
+@end
+
 /// SDK配置类
 /// 应用生命周期内，共享一个实例
 @interface KlevinAdSDKConfiguration : NSObject
@@ -40,6 +49,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 是否允许广告个性化推荐。如果不设置，默认为YES。
 @property (atomic, assign) BOOL allowPersonalizedRecommendation;
+
+/// 是否输出SDK调试信息。默认不输出
+@property (nonatomic, assign) BOOL enableDebugLogout;
+
+/// SDK调试信息协议。当设置enableDebugLogout为YES，实现logDelegate方法可以获取SDK调试信息
+@property (nonatomic, weak, nullable) id<KLNLoggingDelegate> logDelegate;
 
 @end
 

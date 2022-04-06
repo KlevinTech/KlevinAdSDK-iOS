@@ -24,10 +24,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-/// 开屏广告请求对象
+/// 新版开屏广告请求对象
 @interface KLNSplashAdRequest : KLNAdRequest
-/// 超时时长
-@property (nonatomic) NSUInteger timeout;
+
+/// 超时时长，单位s， 不设置默认5s
+@property (nonatomic, assign) NSTimeInterval timeout;
+
+/// 广告view的宽和高，不设置默认为屏幕宽和高
+@property (nonatomic, assign) CGSize adSize;
+
 @end
 
 /// 插屏广告请求对象
@@ -39,15 +44,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 激励视频播放是否自动静音
 /// @discussion 不设置，默认NO，非静音播放
-@property (nonatomic) BOOL autoMute;
+@property (nonatomic, assign) BOOL autoMute;
 
 /// 触发的激励类型，1：复活；2：签到；3：道具；4：虚拟货币；5：其他
 /// @discussion 不设置，则默认为5
-@property (nonatomic) NSUInteger rewardTrigger;
+@property (nonatomic, assign) NSUInteger rewardTrigger;
 
 /// 激励卡秒时长
 /// @discussion 默认为视频时长/赋值大于视频时长或者为非正数时，SDK以视频时长为准
-@property (nonatomic) NSUInteger rewardTime;
+@property (nonatomic, assign) NSUInteger rewardTime;
 
 @end
 
