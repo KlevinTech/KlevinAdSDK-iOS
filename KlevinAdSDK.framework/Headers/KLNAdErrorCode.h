@@ -40,7 +40,9 @@ typedef NS_ENUM(NSInteger, KLNAdErrorCode) {
     KLNAdErrorInternalError = 12002,
     /// SDK未初始化
     KLNAdErrorUninitialized = 12003,
-    
+    /// SDK未完成识别
+    KLNAdErrorNotIdentified = 12004,
+
     /// 网络异常
     KLNAdErrorNetworkException = 13001,
     /// 网络超时
