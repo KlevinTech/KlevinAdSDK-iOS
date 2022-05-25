@@ -6,18 +6,15 @@
 //  Created by Klevin on 2021/4/24.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <KlevinAdSDK/KLNAdRequest.h>
-#import <KlevinAdSDK/KLNSplashAd.h>
-#import <KlevinAdSDK/KLNInterstitialAd.h>
-#import <KlevinAdSDK/KLNRewardedAd.h>
-#import <KlevinAdSDK/KLNAdReward.h>
-#import <KlevinAdSDK/KLNFullScreenContentDelegate.h>
-#import <KlevinAdSDK/KLNAdVideoController.h>
-#import <KlevinAdSDK/KLNAdErrorCode.h>
 #import <KlevinAdSDK/KLNAdsDefines.h>
 #import <KlevinAdSDK/KLNAdEnumTypes.h>
+#import <KlevinAdSDK/KLNAdErrorCode.h>
+#import <KlevinAdSDK/KLNAdVideoController.h>
+#import <KlevinAdSDK/KLNAdBiddingProtocol.h>
 #import <KlevinAdSDK/KlevinAdSDKConfiguration.h>
+#import <KlevinAdSDK/KLNFullScreenContentDelegate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

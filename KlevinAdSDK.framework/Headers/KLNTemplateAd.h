@@ -81,6 +81,11 @@ typedef void (^KLNTemplateAdLoadCompletionHandler)(NSArray<KLNTemplateAd *> *_Nu
 ///  @param error  错误码
 - (void)kln_templateAdRenderFail:(KLNTemplateAd *)ad error:(NSError *)error;
 
+
+/// 广告跳转到其他控制器时，控制器被关闭时调用
+/// @param ad KLNTemplateAd 实例
+/// @param interactionType  KLNInteractionType枚举类型，包括Appstore/网页/视频详情页等
+- (void)kln_templateAdDidCloseOtherController:(KLNTemplateAd *)ad interactionType:(KLNInteractionType)interactionType;
 @end
 
 NS_ASSUME_NONNULL_END

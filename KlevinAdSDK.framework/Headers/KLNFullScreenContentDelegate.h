@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <KlevinAdSDK/KLNAdEnumTypes.h>
 
 @protocol KLNFullScreenContentDelegate;
 
@@ -53,6 +54,12 @@
 /// 业务方可以通过实现该方法，恢复业务视图上的动画等UI操作
 /// @param ad 广告对象
 - (void)adDidDismissFullScreenContent:(nonnull id<KLNFullScreenPresentingAd>)ad;
+
+
+/// 广告跳转到其他控制器时，控制器被关闭时调用
+/// @param ad 广告对象
+/// @param interactionType  KLNInteractionType枚举类型，包括Appstore/网页/视频详情页等
+- (void)adDidCloseOtherController:(nonnull id<KLNFullScreenPresentingAd>)ad interactionType:(KLNInteractionType)interactionType;
 
 @end
 

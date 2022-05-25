@@ -1,5 +1,5 @@
 //
-//  KlevinAdSDKDefines.h
+//  KLNAdsDefines.h
 //  Pods
 //
 //  Copyright © 2021 Tencent. All rights reserved.

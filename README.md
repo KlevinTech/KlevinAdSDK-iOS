@@ -8,7 +8,8 @@
 | 开屏广告 | 开屏广告以App启动为曝光时机，提供5s的可感知广告展示 | APP启动时，常会使用开屏广告 |
 | 激励广告 | 指用户可以选择与之互动来换取应用内奖励的一种广告 | 领取道具，复活，补签到 |
 | 插屏广告 | 插屏广告属于全屏广告，会覆盖宿主应用整个界面，通常展示在应用流程的自然过渡点上 | 页面跳转，活动间的切换处，游戏关卡间的暂停 |
-| 原生自渲染 | 契合应用自身场景特性，开发者可根据广告场景自定义广告细节，同时兼顾广告效果和用户体验 | 信息列表，文章详情页，视频详情页等 |
+| 原生自渲染广告 | 契合应用自身场景特性，开发者可根据广告场景自定义广告细节，同时兼顾广告效果和用户体验 | 信息列表，文章详情页，视频详情页等 |
+| 原生模版广告（从V2.8.0版本开始支持） | 可灵活选择丰富的广告模板，适配开发者自身不同的广告场景 | 信息流列表，小说章节页，文章/视频详情页 |
 
 ## 集成及初始化SDK
 
@@ -24,7 +25,7 @@
 修改项目的 Podfile :
 
 ```shell
-pod 'KlevinAdSDK', '~>2.7'
+pod 'KlevinAdSDK', '~>2.8'
 ```
 然后使用命令行运行：
 
@@ -382,7 +383,7 @@ static NSString *const kKLNPersonalizedRecommendationKey = @"kKLNPersonalizedRec
     <td>说明</td>
   </tr>
   <tr>
-    <td rowspan="4">KLNSplashAdDelegate</td>
+    <td rowspan="5">KLNSplashAdDelegate</td>
     <td>kln_splashAdWillExpose:</td>
     <td>广告曝光回调。业务方可以通过实现该方法，统计曝光量（对账）</td>
   </tr>
@@ -397,6 +398,12 @@ static NSString *const kKLNPersonalizedRecommendationKey = @"kKLNPersonalizedRec
   <tr>
     <td>kln_splashAdClickSkip:</td>
     <td>当用户点击SDK跳过按钮时会触发此回调</td>
+  </tr>
+  <tr>
+    <td>kln_splashAdDidCloseOtherController:interactionType:</td>
+    <td>广告跳转到其他控制器时，控制器被关闭时调用。
+      <br/>interactionType参数：KLNInteractionType枚举类型，包括Appstore/网页/视频详情页等。
+      <br/>请注意：从V2.8.0版本开始支持该方法回调。</td>
   </tr>
 </table>
 
@@ -832,7 +839,8 @@ didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
   <tr>
     <td rowspan="4">KLNInterstitialAd</td>
     <td>fullScreenContentDelegate</td>
-    <td>广告行为回调代理，可以监听广告的曝光、展示、错误、dismiss等</td>
+    <td>广告行为回调代理，可以监听广告的曝光、展示、错误、dismiss等。
+    <br/>请注意：从V2.8.0版本开始，增加adDidCloseOtherController:interactionType:方法回调，该方法在广告跳转到其他控制器时，控制器被关闭时调用。interactionType参数：KLNInteractionType枚举类型，包括Appstore/网页/视频详情页等。 </td>
   </tr>
   <tr>
     <td>loadWithRequest: <br/> completionHandler:</td>
@@ -991,7 +999,8 @@ completionHandler:(KLNRewardedAdLoadCompletionHandler)completionHandler;
   <tr>
     <td rowspan="5">KLNRewardedAd</td>
     <td>fullScreenContentDelegate</td>
-    <td>广告行为回调代理，可以监听广告的曝光、展示、错误、dismiss等</td>
+    <td>广告行为回调代理，可以监听广告的曝光、展示、错误、dismiss等。
+    <br/>请注意：从V2.8.0版本开始，增加adDidCloseOtherController:interactionType:方法回调，该方法在广告跳转到其他控制器时，控制器被关闭时调用。interactionType参数：KLNInteractionType枚举类型，包括Appstore/网页/视频详情页等。 </td>
   </tr>
   <tr>
     <td>+loadWithRequest: <br />completionHandler:</td>
@@ -1044,7 +1053,7 @@ completionHandler:(KLNRewardedAdLoadCompletionHandler)completionHandler;
  </tr>
  <tr>
    <td>adCount</td>
-   <td>请求广告个数。推荐请求1个，最多请求10个。不填默认为1。<br/>注意：设置了adCount，后台可能不返回广告，也可能返回，最多返回adCount个广告。目前只支持设置1个。</td>
+   <td>请求广告个数。推荐请求1个，最多请求10个。不填默认为1。<br/>注意：设置了adCount，后台可能不返回广告，也可能返回，最多返回adCount个广告。</td>
  </tr>
  <tr>
    <td>autoDownloadPolicy</td>
@@ -1414,6 +1423,12 @@ completionHandler:(KLNRewardedAdLoadCompletionHandler)completionHandler;
     <td>videoAutoPlayPolicy</td>
     <td>V2.2.0.286新增属性。<br/>视频广告自动播放策略。默认 KLNUnifiedNativeAdVideoAutoPlayPolicyAlways（总是自动播放）。<br/>KLNUnifiedNativeAdVideoAutoPlayPolicy类型枚举：<br/>KLNUnifiedNativeAdVideoAutoPlayPolicyAlways // 总是自动播放，无论网络条件<br/>KLNUnifiedNativeAdVideoAutoPlayPolicyWIFI  // WIFI 下自动播放<br/>KLNUnifiedNativeAdVideoAutoPlayPolicyNever  // 从不自动播放，无论网络条件</td>
   </tr>
+  <tr>
+    <td>kln_unifiedNativeAdDidCloseOtherController:interactionType:</td>
+    <td>广告跳转到其他控制器时，控制器被关闭时调用。
+      <br/>interactionType参数：KLNInteractionType枚举类型，包括Appstore/网页/视频详情页等。
+      <br/>请注意：从V2.8.0版本开始支持该方法回调。</td>
+  </tr>
 </table>
 
 #### 4. 其他说明
@@ -1421,6 +1436,324 @@ completionHandler:(KLNRewardedAdLoadCompletionHandler)completionHandler;
 1. 广告曝光kln_unifiedNativeAdWillExpose:方法回调的时机需满足以下条件：广告view可见,alpha不小于0.9，曝光面积不小于50%，**广告view宽度不小于屏幕宽度三分之一(从V2.3.0.220开始该判断条件去掉)**，**持续曝光1s(从V2.6.1开始该判断条件去掉)。**对于一个广告，只会执行曝光回调一次。
 
 2. registerWithClickableViews方法中，clickableViews只接受可见视图的点击（有效点击），如果不可见，即便注册到clickableViews中也不会响应广告的点击事件。
+
+
+
+### 原生模版广告接入
+
+**请注意：**从**V2.8.0**版本开始支持原生模版广告。
+
+#### 1、加载广告并注册回调
+
+原生模版广告加载是通过调用 `KLNTemplateAd` 类的静态方法 `loadWithRequest: completionHandler:` 完成的。该方法需要两个参数，一是 `KLNTemplateAdRequest` 对象，二是加载成功或者失败的回调Block。
+
+加载成功得到 `KLNTemplateAd `实例数组后，对每个 `KLNTemplateAd` 实例可以注册 `KLNTemplateAdDelegate` 代理对象，`KLNTemplateAdDelegate` 协议暴露了广告渲染成功、广告渲染失败、广告曝光、广告点击、广告关闭、广告详情页关闭等回调；你也可以给 `KLNTemplateAd` 实例的 `videoController `属性设置代理，获取视频广告播放相关的回调，目前支持视频静音、取消静音、开始/恢复播放、暂停播放、播放结束回调。
+
+通过 `KLNTemplateAd` 实例，你可以获取和设置模版广告相关信息，比如获取广告渲染view、是否是视频广告等信息；可以设置视频广告的播放策略；通过 调用`render `方法来渲染广告。
+
+**模版广告请求参数类主要接口如下：**
+
+<table>
+ <tr>
+   <td>类名</td>
+   <td>属性&&方法</td>
+   <td>说明</td>
+ </tr>
+ <tr>
+   <td rowspan="5">KLNTemplateAdRequest</td>
+   <td>posId</td>
+   <td>广告位置Id，初始化函数initWithPosId:必填参数</td>
+ </tr>
+ <tr>
+   <td>adCount</td>
+   <td>请求广告个数。推荐请求1-3个，一次最多请求3个。不填默认为1。<br/>注意：设置了adCount，后台可能不返回广告，也可能返回，最多返回adCount个广告。</td>
+ </tr>
+  <tr>
+   <td>adSize</td>
+   <td>请求广告的宽和高，SDK目前忽略设置的高度，建议填0。必填参数。</td>
+ </tr>
+ <tr>
+   <td>autoDownloadPolicy</td>
+   <td>视频素材下载策略：控制视频素材下载时机；<br/>
+    默认任意网络环境下自动下载视频<br/>
+    如希望仅WIFI环境下自动下载视频，则可在请求前设置对应的值：KLNVideoDownloadPolicyWifiOnly。</td>
+ </tr>
+  <tr>
+   <td>muted</td>
+   <td>视频广告初始化时是否静音播放，默认静音播放。</td>
+ </tr>
+</table>
+
+**请注意：**
+
+1. 模版广告的尺寸adSize**目前会忽略高度设置，请填写0**。请不要随意设置尺寸大小否则有可能出现拉取失败或者广告变形的情况。
+2. 模版广告可同时请求多条广告，**最大请求数量为3**。
+3. 目前SDK使用WKWebView渲染模版广告，**为了避免内存占用过大**，建议在合适的时机进行广告移除操作，保证不使用的广告，在合适的时机进行释放处理。
+
+以下示例展示了如何在自己的VC中加载 `KLNTemplateAd` :
+
+```objc
+- (void)_onReloadBtnClick{
+    
+    [self _dismissKeyboard];
+    
+    KLNTemplateAdRequest *request = [[KLNTemplateAdRequest alloc] initWithPosId:[self posId]];
+//    request.muted = NO;
+    request.autoDownloadPolicy = self.videoDownloadPolicy;
+    request.adCount = self.adCountSlider.value;
+    request.adSize = CGSizeMake([UIScreen mainScreen].bounds.size.width - 2 * kKLNDemoTemplateCell_horGap , 0);
+    
+    __weak typeof(self)weakSelf = self;
+    [KLNTemplateAd loadWithRequest:request completionHandler:^(NSArray<KLNTemplateAd *> * _Nullable adList, NSError * _Nullable error) {
+        
+        if (adList.count > 0) {
+            [weakSelf.adList removeAllObjects];//【重要】不能保存太多广告，需要在合适的时机手动释放不用的，否则内存会过大
+            
+            for (KLNTemplateAd *ad in adList) {
+                [weakSelf reportBidding:ad];
+            }
+            
+            [weakSelf.adList addObjectsFromArray:adList];
+            for (NSUInteger i = 0; i < weakSelf.adList.count; ++i) {
+                KLNTemplateAd *ad = weakSelf.adList[i];
+                ad.delegate = weakSelf;
+                ad.viewController = weakSelf;
+                ad.videoAutoPlayPolicy = weakSelf.videoAutoPlayPolicy;
+                
+                // important: 此处会进行WKWebview的渲染，建议一次最多预加载三个广告，避免内存占用过大
+                [ad render];
+            }
+        }
+        
+        [self.dataTableView reloadData];
+    }];
+}
+
+#pragma mark - KLNTemplateAdDelegate
+
+- (void)kln_templateAdWillExpose:(KLNTemplateAd *)ad {
+    
+    KLNDemoLog(@"🌹模版广告曝光 ad:%@", ad);
+}
+- (void)kln_templateAdDidClick:(KLNTemplateAd *)ad {
+    
+    KLNDemoLog(@"🌹模版广告点击 ad:%@", ad);
+}
+
+- (void)kln_templateAdClosed:(KLNTemplateAd *)ad {
+    
+    KLNDemoLog(@"🌹模版广告关闭 ad:%@", ad);
+    
+    [self.adList removeObject:ad];
+    [self.dataTableView reloadData];
+}
+
+- (void)kln_templateAdRenderSuccess:(KLNTemplateAd *)ad {
+    
+    KLNDemoLog(@"🌹模版广告渲染成功 ad:%@", ad);
+    
+    [self.dataTableView reloadData];
+    
+}
+
+- (void)kln_templateAdRenderFail:(KLNTemplateAd *)ad error:(nonnull NSError *)error {
+    
+    KLNDemoLog(@"🌹模版广告渲染失败 ad:%@ error:%@", ad, error);
+    
+    // 如果接入方想在模版广告渲染失败后把广告删除，请加入如下代码
+//    [self.adList removeObject:ad];
+//    [self.dataTableView reloadData];
+}
+```
+
+完整代码请参考Demo。
+
+#### 2、展示广告
+
+1）请在广告加载成功后，调用 `render `方法渲染广告；
+
+2）请在广告渲染成功回调 `kln_templateAdRenderSuccess: `、渲染失败回调 `kln_templateAdRenderFail: `、关闭广告回调`kln_templateAdClosed`刷新你的列表。
+
+
+
+参考如下代码：
+
+```objc
+- (void)_onReloadBtnClick{
+    
+    [self _dismissKeyboard];
+    
+    KLNTemplateAdRequest *request = [[KLNTemplateAdRequest alloc] initWithPosId:[self posId]];
+//    request.muted = NO;
+    request.autoDownloadPolicy = self.videoDownloadPolicy;
+    request.adCount = self.adCountSlider.value;
+    request.adSize = CGSizeMake([UIScreen mainScreen].bounds.size.width - 2 * kKLNDemoTemplateCell_horGap , 0);
+    
+    __weak typeof(self)weakSelf = self;
+    [KLNTemplateAd loadWithRequest:request completionHandler:^(NSArray<KLNTemplateAd *> * _Nullable adList, NSError * _Nullable error) {
+        
+        if (adList.count > 0) {
+            [weakSelf.adList removeAllObjects];//【重要】不能保存太多广告，需要在合适的时机手动释放不用的，否则内存会过大
+            
+            for (KLNTemplateAd *ad in adList) {
+                [weakSelf reportBidding:ad];
+            }
+            
+            [weakSelf.adList addObjectsFromArray:adList];
+            for (NSUInteger i = 0; i < weakSelf.adList.count; ++i) {
+                KLNTemplateAd *ad = weakSelf.adList[i];
+                ad.delegate = weakSelf;
+                ad.viewController = weakSelf;
+                ad.videoAutoPlayPolicy = weakSelf.videoAutoPlayPolicy;
+                
+                // important: 此处会进行WKWebview的渲染，建议一次最多预加载三个广告，如果超过3个会很大概率导致WKWebview渲染失败。
+                [ad render];
+            }
+        }
+        
+        [self.dataTableView reloadData];
+    }];
+}
+
+- (void)kln_templateAdClosed:(KLNTemplateAd *)ad {
+    
+    KLNDemoLog(@"🌹模版广告关闭 ad:%@", ad);
+    
+    [self.adList removeObject:ad];
+    [self.dataTableView reloadData];
+}
+
+- (void)kln_templateAdRenderSuccess:(KLNTemplateAd *)ad {
+    
+    KLNDemoLog(@"🌹模版广告渲染成功 ad:%@", ad);
+    
+    [self.dataTableView reloadData];
+    
+}
+
+- (void)kln_templateAdRenderFail:(KLNTemplateAd *)ad error:(nonnull NSError *)error {
+    
+    KLNDemoLog(@"🌹模版广告渲染失败 ad:%@ error:%@", ad, error);
+    
+    // 如果接入方想在模版广告渲染失败后把广告删除，请加入如下代码
+//    [self.adList removeObject:ad];
+//    [self.dataTableView reloadData];
+}
+```
+
+具体请参考demo。
+
+#### 3、主要API
+
+**模版广告请求参数类KLNTemplateAdRequest主要接口如下：**
+
+<table>
+ <tr>
+   <td>类名</td>
+   <td>属性</td>
+   <td>说明</td>
+ </tr>
+ <tr>
+   <td rowspan="5">KLNTemplateAdRequest</td>
+   <td>posId</td>
+   <td>广告位置Id，初始化函数initWithPosId:必填参数</td>
+ </tr>
+ <tr>
+   <td>adCount</td>
+   <td>请求广告个数。推荐请求1-3个，一次最多请求3个。不填默认为1。<br/>注意：设置了adCount，后台可能不返回广告，也可能返回，最多返回adCount个广告。目前只支持设置1个。</td>
+ </tr>
+  <tr>
+   <td>adSize</td>
+   <td>请求广告的宽和高，SDK目前忽略设置的高度，建议填0。必填参数。</td>
+ </tr>
+ <tr>
+   <td>autoDownloadPolicy</td>
+   <td>视频素材下载策略：控制视频素材下载时机；<br/>
+    默认任意网络环境下自动下载视频<br/>
+    如希望仅WIFI环境下自动下载视频，则可在请求前设置对应的值：KLNVideoDownloadPolicyWifiOnly。</td>
+ </tr>
+  <tr>
+   <td>muted</td>
+   <td>视频广告初始化时是否静音播放，默认静音播放。</td>
+ </tr>
+</table>
+
+**模版广告类KLNTemplateAd主要接口如下：**
+
+<table>
+ <tr>
+   <td>类名</td>
+   <td>属性&&方法</td>
+   <td>说明</td>
+ </tr>
+ <tr>
+   <td rowspan="6">KLNTemplateAd</td>
+   <td>delegate</td>
+   <td>KLNTemplateAdDelegate协议代理。接入方可以实现该属性获取广告曝光、点击、关闭等事件。</td>
+ </tr>
+ <tr>
+   <td>viewController</td>
+   <td>开发者传入的用来present目标页的ViewController，必填参数。</td>
+ </tr>
+  <tr>
+   <td>videoAd</td>
+   <td>是否视频广告。</td>
+ </tr>
+ <tr>
+   <td>adView</td>
+   <td>广告view。</td>
+</tr>
+  <tr>
+   <td>videoAutoPlayPolicy</td>
+   <td><br/>视频广告自动播放策略。默认 KLNVideoAutoPlayPolicyAlways（总是自动播放）。<br/>KLNVideoAutoPlayPolicy类型枚举：<br/>KLNVideoAutoPlayPolicyAlways // 总是自动播放，无论网络条件<br/>KLNVideoAutoPlayPolicyWIFI  // WIFI 下自动播放<br/>KLNVideoAutoPlayPolicyNever  // 从不自动播放，无论网络条件</td>
+  </tr>
+  <tr>
+   <td>loadWithRequest: completionHandler:</td>
+   <td>加载模版广告方法。参数：request 模版广告请求对象；completionHandler 广告加载结果回调（成功/失败）。请注意：回调非线程安全。</td>
+  </tr>
+</table>
+
+**广告事件回调KLNTemplateAdDelegate主要接口如下：**
+
+<table>
+  <tr>
+    <td>类名</td>
+    <td>方法名</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td rowspan="6">KLNTemplateAdDelegate</td>
+    <td>kln_templateAdWillExpose:</td>
+    <td>广告曝光回调。业务方可以通过实现该方法，统计曝光量（对账）</td>
+  </tr>
+  <tr>
+    <td>kln_templateAdDidClick:</td>
+    <td>广告点击回调。业务方可以通过实现该方法，统计点击量（对账）</td>
+  </tr>
+   <tr>
+    <td>kln_templateAdClosed:</td>
+    <td>广告关闭回调。请在此回调方法中进行广告对象的移除操作</td>
+  </tr>
+  <tr>
+    <td>kln_templateAdRenderSuccess:</td>
+    <td>广告渲染成功, 此时的 ad.adView.frame.size.height 根据请求广告传入的width完成了动态更新。</td>
+  </tr>
+  <tr>
+    <td>kln_templateAdRenderFail:</td>
+    <td>原生模板广告渲染失败。</td>
+  </tr>
+  <tr>
+    <td>kln_templateAdDidCloseOtherController:interactionType:</td>
+    <td>广告跳转到其他控制器时，控制器被关闭时调用。
+      <br/>interactionType参数：KLNInteractionType枚举类型，包括Appstore/网页/视频详情页等。<br/>
+    </td>
+  </tr>
+</table>
+
+#### 4、其他说明
+
+1. 广告曝光`kln_templateAdWillExpose:`方法回调的时机需满足以下条件：广告view可见，alpha不小于0.9，曝光面积不小于50%。对于一个广告，只会执行曝光回调一次。
+
 
 ### 实时竞价
 
@@ -1555,7 +1888,7 @@ lipo -remove x86_64 KlevinAdSDK.framework/KlevinAdSDK -o KlevinAdSDK.framework/K
 
 ### 广告实例使用
 
-开屏广告`KLNSplashAd `、插屏广告` KLNInterstitialAd` 、激励广告 `KLNRewardedAd `加载返回实例不支持重复展示，建议在每次展示后，删除本地持有的广告对象实例，在`KLNFullScreenContentDelegate `的 `adDidDismissFullScreenContent: `方法中，加载另一个广告实例，以便在下一次曝光机会发生时，立即展示新的广告。
+插屏广告` KLNInterstitialAd` 、激励广告 `KLNRewardedAd `加载返回实例不支持重复展示，建议在每次展示后，删除本地持有的广告对象实例，在`KLNFullScreenContentDelegate `的 `adDidDismissFullScreenContent: `方法中，加载另一个广告实例，以便在下一次曝光机会发生时，立即展示新的广告。
 
 广告实例有效时长默认为3小时，在收到响应的错误码`14009`后，请删除该实例，并重新加载一个新的广告。
 
@@ -1618,7 +1951,8 @@ POSID：
 - 开屏广告：37060
 - 激励视频：37061
 - 插屏广告：37062
-- 原生广告：37063
+- 原生自渲染广告：37063
+- 原生模版广告：37570
 
 **请注意：发布前，请务必将对应的APPID和POSID修改为应用所申请的正确的值。**
 

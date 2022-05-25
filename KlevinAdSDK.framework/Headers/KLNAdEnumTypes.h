@@ -43,8 +43,15 @@ typedef NS_ENUM(NSInteger, KLNAdTemplateType) {
     /// 互动广告竖版
     KLNAdTemplateTypeVerInteractive = 302,
 };
+//
+typedef NS_ENUM(NSInteger, KLNInteractionType) {
+    KLNInteractionTypeUnknown       = 0,
+    KLNInteractionTypeInnerWeb      = 1,                // 落地页
+    KLNInteractionTypeAppStore      = 2,                // 下载页
+    KLNInteractionTypeVideoAdDetail = 3                 // 视频详情页
+};
 
-
+/// Bidding
 typedef NS_ENUM(NSInteger, KLNAdBiddingLossReason) {
     KLNAdBiddingLossReasonNone              = 1,        // 竞得
     KLNAdBiddingLossReasonLowPrice          = 2711,     // 竞争力不足

@@ -83,7 +83,7 @@ typedef NS_ENUM(NSUInteger, KLNVideoAutoPlayPolicy) {
 /// 模版广告请求对象
 @interface KLNTemplateAdRequest : KLNAdRequest
 
-/// 一次请求模版广告个数，推荐请求1-3个，一次最多请求3个。
+/// 一次请求模版广告个数，推荐请求1-3个，一次最多请求3个。不填默认为1。
 @property (nonatomic, assign) NSUInteger adCount;
 
 /// 请求广告的宽和高，SDK目前忽略设置的高度，建议填0。必填参数。

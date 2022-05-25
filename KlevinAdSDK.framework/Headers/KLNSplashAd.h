@@ -6,11 +6,7 @@
 //  Created by Klevin on 2022/2/25.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <KlevinAdSDK/KLNAdRequest.h>
-#import <KlevinAdSDK/KLNAdVideoController.h>
-#import <KlevinAdSDK/KLNAdBiddingProtocol.h>
+#import <KlevinAdSDK/KlevinAdSDK.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -74,21 +70,27 @@ typedef void (^KLNSplashAdLoadCompletionHandler)(KLNSplashAd *_Nullable splashAd
 
 /// 广告曝光回调
 /// 业务方可以通过实现该方法，统计｜曝光｜量（对账）
-/// @param ad  KLNNewSplashAd 实例
+/// @param ad  KLNSplashAd 实例
 - (void)kln_splashAdWillExpose:(KLNSplashAd *)ad;
 
 /// 广告点击回调
 /// 业务方可以通过实现该方法，统计｜点击｜量（对账）
-/// @param ad KLNNewSplashAd 实例
+/// @param ad KLNSplashAd 实例
 - (void)kln_splashAdDidClick:(KLNSplashAd *)ad;
 
 /// 广告被关闭
-/// @param ad  KLNTemplateAd 实例
+/// @param ad  KLNSplashAd 实例
 - (void)kln_splashAdClosed:(KLNSplashAd *)ad;
 
 /// 广告点击跳过回调
-/// @param ad  KLNNewSplashAd 实例
+/// @param ad  KLNSplashAd 实例
 - (void)kln_splashAdClickSkip:(KLNSplashAd *)ad;
+
+
+/// 广告跳转到其他控制器时，控制器被关闭时调用
+/// @param ad KLNSplashAd 实例
+/// @param interactionType  KLNInteractionType枚举类型，包括Appstore/网页/视频详情页等
+- (void)kln_splashAdDidCloseOtherController:(KLNSplashAd *)ad interactionType:(KLNInteractionType)interactionType;
 
 @end
 

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+
 #import <KlevinAdSDK/KLNAdRequest.h>
 #import <KlevinAdSDK/KLNFullScreenContentDelegate.h>
 #import <KlevinAdSDK/KLNAdVideoController.h>

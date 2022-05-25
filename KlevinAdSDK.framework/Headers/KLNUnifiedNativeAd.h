@@ -134,6 +134,12 @@ typedef void (^KLNUnifiedNativeAdLoadCompletionHandler)(NSArray<KLNUnifiedNative
 /// @param ad KLNUnifiedNativeAd 实例
 - (void)kln_unifiedNativeAdDidClick:(KLNUnifiedNativeAd *)ad;
 
+
+/// 广告跳转到其他控制器时，控制器被关闭时调用
+/// @param ad KLNUnifiedNativeAd 实例
+/// @param interactionType  KLNInteractionType枚举类型，包括Appstore/网页/视频详情页等
+- (void)kln_unifiedNativeAdDidCloseOtherController:(KLNUnifiedNativeAd *)ad interactionType:(KLNInteractionType)interactionType;
+
 @end
 
 NS_ASSUME_NONNULL_END

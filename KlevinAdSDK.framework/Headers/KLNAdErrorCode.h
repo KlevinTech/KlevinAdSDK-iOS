@@ -72,6 +72,8 @@ typedef NS_ENUM(NSInteger, KLNAdErrorCode) {
     KLNAdErrorInvalidRequestParams = 14010,
     /// 展示广告传入参数错误
     KLNAdErrorInvalidPresentParams = 14011,
+    /// 广告请求组包错误
+    KLNAdErrorEncodeDataError = 14012,
     
     /// 服务端数据错误
     KLNAdErrorInvalidResponse = 15001,
