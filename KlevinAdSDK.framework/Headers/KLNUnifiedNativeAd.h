@@ -16,10 +16,14 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSUInteger, KLNUnifiedNativeAdType) {
     /// 未知模版
     KLNUnifiedNativeAdTypeUnknown = 1,
-    /// 原生自渲染-横版大图16：9
+    /// 原生自渲染-横版大图16:9
     KLNUnifiedNativeAdTypeHorBigImage = 1001,
-    /// 原生自渲染-横版视频16：9
+    /// 原生自渲染-横版视频16:9
     KLNUnifiedNativeAdTypeHorVideo = 1002,
+    /// 原生自渲染-竖版大图9:16
+    KLNUnifiedNativeAdTypeVerBigImage = 1003,
+    /// 原生自渲染-竖版视频9:16
+    KLNUnifiedNativeAdTypeVerVideo = 1004,
     
 };
 

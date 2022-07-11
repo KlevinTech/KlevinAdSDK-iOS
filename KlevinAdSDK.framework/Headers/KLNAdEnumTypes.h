@@ -38,6 +38,11 @@ typedef NS_ENUM(NSInteger, KLNAdTemplateType) {
     KLNAdTemplateTypeUnifiedNativeAdHorBigImage = 201,
     /// 原生自渲染-横版视频16：9
     KLNAdTemplateTypeUnifiedNativeAdHorVideo = 202,
+    /// 原生自渲染-竖版大图9：16
+    KLNAdTemplateTypeUnifiedNativeAdVerBigImage = 203,
+    /// 原生自渲染-竖版视频9：16
+    KLNAdTemplateTypeUnifiedNativeAdVerVideo = 204,
+    
     /// 互动广告横版
     KLNAdTemplateTypeHorInteractive = 301,
     /// 互动广告竖版
@@ -58,6 +63,14 @@ typedef NS_ENUM(NSInteger, KLNAdBiddingLossReason) {
     KLNAdBiddingLossReasonTimeOut           = 2712,     // 返回超时
     KLNAdBiddingLossReasonNoAd              = 2713,     // 无广告回包
     KLNAdBiddingLossReasonOther             = 2714,     // 其他原因
+};
+
+
+/// 投放方式
+typedef NS_ENUM(NSInteger, KLNAdDeliveryType) {
+    KLNAdDeliveryTypeDefault                = 0,
+    KLNAdDeliveryTypeDownload               = 1,     // 直接下载
+    KLNAdDeliveryTypeInnerWeb               = 2,     // 落地页
 };
 
 
