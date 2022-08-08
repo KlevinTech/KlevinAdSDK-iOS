@@ -85,7 +85,8 @@ typedef void (^KLNUnifiedNativeAdLoadCompletionHandler)(NSArray<KLNUnifiedNative
 /// 广告高度
 @property (nonatomic, assign, readonly) CGFloat height;
 
-/// 广告图片URL
+/// 广告图片URL 。
+/// 请注意：图片类广告该属性值为图片url；视频类广告目前封面不对外暴露，故值为nil
 @property (nonatomic, readonly, nullable) NSString *imageUrl;
 
 /// 视频广告自动播放策略，默认 KLNUnifiedNativeAdVideoAutoPlayPolicyAlways（总是自动播放）
