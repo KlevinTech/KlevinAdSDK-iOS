@@ -39,6 +39,9 @@ typedef void (^KLNRewardedAdLoadCompletionHandler)(KLNRewardedAd *_Nullable rewa
 /// Controller for video play
 @property (nonatomic, strong, readonly, nullable) KLNAdVideoController *videoController;
 
+/// 广告推广类型： 2=下载广告；3=网页推广广告
+@property (nonatomic, assign, readonly) NSInteger promotedType;
+
 /// 加载激励广告方法
 /// @param request 激励广告请求对象
 /// @param completionHandler 广告加载结果回调（成功/失败）

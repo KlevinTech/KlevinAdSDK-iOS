@@ -43,6 +43,9 @@ typedef void (^KLNTemplateAdLoadCompletionHandler)(NSArray<KLNTemplateAd *> *_Nu
 /// 视频广告自动播放策略，默认 KLNVideoAutoPlayPolicyAlways（总是自动播放）
 @property (nonatomic, assign) KLNVideoAutoPlayPolicy videoAutoPlayPolicy;
 
+/// 广告推广类型： 2=下载广告；3=网页推广广告
+@property (nonatomic, assign, readonly) NSInteger promotedType;
+
 /// 加载模版广告方法
 /// @param request 模版广告请求对象
 /// @param completionHandler 广告信息加载结果回调（成功/失败），请注意：回调非线程安全

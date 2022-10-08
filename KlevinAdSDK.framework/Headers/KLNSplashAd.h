@@ -51,6 +51,9 @@ typedef void (^KLNSplashAdLoadCompletionHandler)(KLNSplashAd *_Nullable splashAd
 /// 广告view
 @property (nonatomic, strong, readonly) UIView *adView;
 
+/// 广告推广类型： 2=下载广告；3=网页推广广告
+@property (nonatomic, assign, readonly) NSInteger promotedType;
+
 /// 加载开屏广告方法
 /// @param request 开屏广告请求对象
 /// @param completionHandler 广告加载结果回调（成功/失败），请注意：回调非线程安全

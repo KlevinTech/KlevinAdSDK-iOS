@@ -73,7 +73,6 @@ typedef NS_ENUM(NSInteger, KLNAdDeliveryType) {
     KLNAdDeliveryTypeInnerWeb               = 2,     // 落地页
 };
 
-
 typedef NSString *KLNAdBidingAdnID NS_STRING_ENUM;
 /// 输给游可赢其他广告
 KLN_EXTERN KLNAdBidingAdnID const KLNAdBidingAdnIDYKYAd;
