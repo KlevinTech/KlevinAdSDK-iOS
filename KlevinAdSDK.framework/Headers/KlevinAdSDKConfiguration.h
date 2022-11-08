@@ -3,6 +3,7 @@
 //  KlevinAdSDK
 //
 //  Created by ArvinLiang on 2021/11/29.
+//  Copyright © 2021 Tencent. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

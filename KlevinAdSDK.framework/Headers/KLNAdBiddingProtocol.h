@@ -28,7 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///      KLNAdBidingAdnIDYKYAd：输给游可赢其他广告
 ///      KLNAdBidingAdnIDThirdParty：输给第三方ADN
 ///      KLNAdBidingAdnIDSelfOwn：输给自售广告主
-- (void)sendLossNotificationWithWinnerPrice:(NSInteger)price lossReason:(KLNAdBiddingLossReason)reason winnerAdnID:(KLNAdBidingAdnID _Nullable)adnID;
+- (void)sendLossNotificationWithWinnerPrice:(NSInteger)price
+                                 lossReason:(KLNAdBiddingLossReason)reason
+                                winnerAdnID:(KLNAdBidingAdnID _Nullable)adnID;
 
 @end
 

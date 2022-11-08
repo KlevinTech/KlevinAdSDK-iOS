@@ -35,8 +35,15 @@ block();\
 dispatch_async(dispatch_get_main_queue(), block);\
 }
 
-#define KLNHEX(colorValue) [UIColor colorWithRed:((CGFloat)((colorValue & 0xFF0000) >> 16)) / 255.f green:((CGFloat)((colorValue & 0x00FF00) >> 8)) / 255.f blue:((CGFloat)((colorValue & 0x0000FF) >> 0)) / 255.f alpha:1.0]
-#define KLNHEXA(colorValue, alphaValue) [UIColor colorWithRed:((CGFloat)((colorValue & 0xFF0000) >> 16)) / 255.f green:((CGFloat)((colorValue & 0x00FF00) >> 8)) / 255.f blue:((CGFloat)((colorValue & 0x0000FF) >> 0)) / 255.f alpha:alphaValue]
+#define KLNHEX(colorValue) [UIColor colorWithRed:((CGFloat)((colorValue & 0xFF0000) >> 16)) / 255.f \
+green:((CGFloat)((colorValue & 0x00FF00) >> 8)) / 255.f \
+blue:((CGFloat)((colorValue & 0x0000FF) >> 0)) / 255.f \
+alpha:1.0]
+
+#define KLNHEXA(colorValue, alphaValue) [UIColor colorWithRed:((CGFloat)((colorValue & 0xFF0000) >> 16)) / 255.f \
+green:((CGFloat)((colorValue & 0x00FF00) >> 8)) / 255.f \
+blue:((CGFloat)((colorValue & 0x0000FF) >> 0)) / 255.f \
+alpha:alphaValue]
 
 #define KLNStringNotNil(_str_) (_str_ ?: @"")
 #define KLNStringMultiline(...) [[NSString alloc] initWithCString:#__VA_ARGS__ encoding:NSUTF8StringEncoding]
@@ -98,11 +105,3 @@ return gSharedInstance; \
         Stuff; \
         _Pragma("clang diagnostic pop") \
     } while (0)
-
-
-#pragma mark - 系统版本号比较
-
-#define KLN_SYSTEM_VERSION_LESS_THAN(v)                     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
-#define KLN_SYSTEM_VERSION_GREATER_THAN(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
-#define KLN_SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)      ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
-#define KLN_SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)         ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)

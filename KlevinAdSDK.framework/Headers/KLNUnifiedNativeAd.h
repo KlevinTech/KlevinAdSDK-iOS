@@ -92,6 +92,12 @@ typedef void (^KLNUnifiedNativeAdLoadCompletionHandler)(NSArray<KLNUnifiedNative
 /// 视频广告自动播放策略，默认 KLNUnifiedNativeAdVideoAutoPlayPolicyAlways（总是自动播放）
 @property (nonatomic, assign) KLNUnifiedNativeAdVideoAutoPlayPolicy videoAutoPlayPolicy;
 
+/// 广告请求ID
+@property (nonatomic, copy, readonly) NSString *requestId;
+
+/// 广告创意ID
+@property (nonatomic, copy, readonly) NSString *creativeID;
+
 /// 广告推广类型： 2=下载广告；3=网页推广广告
 @property (nonatomic, assign, readonly) NSInteger promotedType;
 

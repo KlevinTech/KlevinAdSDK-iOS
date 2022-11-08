@@ -32,6 +32,12 @@ typedef void (^KLNInterstitialAdLoadCompletionHandler)(KLNInterstitialAd *_Nulla
 /// Controller for video play
 @property (nonatomic, strong, readonly, nullable) KLNAdVideoController *videoController;
 
+/// 广告请求ID
+@property (nonatomic, copy, readonly) NSString *requestId;
+
+/// 广告创意ID
+@property (nonatomic, copy, readonly) NSString *creativeID;
+
 /// 广告推广类型： 2=下载广告；3=网页推广广告
 @property (nonatomic, assign, readonly) NSInteger promotedType;
 
